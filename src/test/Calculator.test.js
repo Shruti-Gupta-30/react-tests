@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { Calculator } from "components/Calculator";
+import { Calculator } from "components/Calculator/Calculator";
 
 describe("<Calculator />", () => {
 	it(" has 'Calculator' displayed somewhere", () => {

@@ -1,9 +1,12 @@
-import { Calculator } from "components/Calculator";
+import { Calculator } from "components/Calculator/Calculator";
 import s from "./App.module.css";
+import { RandomUser } from "components/RandomUser/RandomUser";
+
 export function App() {
 	return (
 		<div className={s.root}>
-			<Calculator defaultA={2} defaultB={5} defaultOperator={"+"} />
+			{/* <Calculator defaultA={2} defaultB={5} defaultOperator={"+"} /> */}
+			<RandomUser />
 		</div>
 	);
 }
