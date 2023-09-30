@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { Calculator } from "components/Calculator";
 
 describe("<Calculator />", () => {
@@ -24,14 +24,54 @@ describe("<Calculator />", () => {
 	});
 
 	it("uses the default values correctly ", () => {
-		render(<Calculator defaultA={12} defaultB={"10"} defaultOperator={"/"} />);
+		render(<Calculator defaultA={12} defaultB={"10"} defaultOperator={"-"} />);
 
 		const { getValueA, getValueB, getOperator, getResult } = getCalculator();
 
 		expect(getValueA()).toBe("12");
 		expect(getValueB()).toBe("10");
-		expect(getOperator()).toBe("/");
-		expect(getResult()).toBe("1.2");
+		expect(getOperator()).toBe("-");
+		expect(getResult()).toBe("2");
+	});
+
+	it("calculates correctly when the user updates an input", () => {
+		render(<Calculator defaultA={12} defaultB={"10"} defaultOperator={"x"} />);
+		const { getValueA, getValueB, getOperator, getResult } = getCalculator();
+
+		fireEvent.change(screen.getByTestId("inputA"), { target: { value: "3" } });
+		expect(getResult()).toBe("30");
+		fireEvent.change(screen.getByTestId("inputB"), { target: { value: "3" } });
+		expect(getResult()).toBe("9");
+		fireEvent.change(screen.getByTestId("operator"), {
+			target: { value: "/" },
+		});
+		expect(getResult()).toBe("1");
+	});
+
+	it("displays an error when we divide by 0", () => {
+		render(<Calculator defaultA={12} defaultB={"0"} defaultOperator={"/"} />);
+		const { getValueA, getValueB, getOperator, getResult } = getCalculator();
+
+		expect(getResult()).toBe("You can't divide by 0");
+	});
+	it("displays a message when no operator is provided", () => {
+		render(<Calculator defaultA={12} defaultB={"0"} defaultOperator={"/"} />);
+		const { getValueA, getValueB, getOperator, getResult } = getCalculator();
+		fireEvent.change(screen.getByTestId("operator"), {
+			target: { value: "!" },
+		});
+		expect(getResult()).toBe("No Operator Selected");
+	});
+	it("returns 0 when the inputs are empty", () => {
+		render(<Calculator defaultA={12} defaultB={"0"} defaultOperator={"x"} />);
+		const { getValueA, getValueB, getOperator, getResult } = getCalculator();
+		fireEvent.change(screen.getByTestId("inputA"), {
+			target: { value: "" },
+		});
+		fireEvent.change(screen.getByTestId("inputB"), {
+			target: { value: "" },
+		});
+		expect(getResult()).toBe("0");
 	});
 });
 
